@@ -8,11 +8,10 @@
  */
 
 import React, {PureComponent} from "react";
-import 'antd/dist/antd.css';
-import {Input, Button, List} from 'antd';
 import {connect} from 'react-redux';
 import {PropTypes} from 'prop-types';
-import {onValueChange, onAddItem} from "../actions/todo";
+import {onValueChange, onAddItem, onDeleteItem, getTodoList} from "../actions/todo";
+import RootUI from "./RootUI";
 
 class Root extends PureComponent {
 
@@ -20,6 +19,9 @@ class Root extends PureComponent {
         inputValue: PropTypes.string.isRequired,
         list: PropTypes.array.isRequired,
         onValueChange: PropTypes.func.isRequired,
+        onAddItem: PropTypes.func.isRequired,
+        onDeleteItem: PropTypes.func.isRequired,
+        getTodoList: PropTypes.func.isRequired,
     }
 
     // 必须是箭头函数才能拿到this;
@@ -29,6 +31,14 @@ class Root extends PureComponent {
 
     onAddClick = e => {
         this.props.onAddItem();
+    }
+
+    onDeleteClick(index) {
+        this.props.onDeleteItem(index);
+    }
+
+    componentDidMount() {
+        this.props.getTodoList()
     }
 
     // 普通函数拿不到this
@@ -46,42 +56,31 @@ class Root extends PureComponent {
     // 如果使用es5的React.createClass()创建组件，this反而会自动绑定为当前组建实例
     render() {
         return (
-            <div style={{margin: '10px'}}>
-                <div>
-                    <Input placeholder={'input something'}
-                           style={{width: '250px', marginRight: '10px'}}
-                           onChange={this.onChange} // bind
-                        value={this.props.inputValue}
-                    />
-                    <Button type={'primary'}
-                            onClick={this.onAddClick}
-                    >
-                        增加
-                    </Button>
-                </div>
-                <div style={{margin: 10, width: 300}}>
-                    <List
-                        bordered
-                        dataSource={this.props.list}
-                        renderItem={(item) => <List.Item>{item}</List.Item>}
-                    >
-                    </List>
-                </div>
-            </div>
+            <RootUI
+                inputValue={this.props.inputValue}
+                onChange={this.onChange}
+                onAddClick={this.onAddClick}
+                list={this.props.list}
+                onDeleteClick={(index) => this.onDeleteClick(index)}
+            />
         )
     }
 }
 
-const mapStateToProps = (state, props) => {
-    const {todo} = state;
-    const {list, inputValue} = todo;
+const mapStateToProps = (state) => {
+    // 连续解构
+    const {todo: {list, inputValue}} = state;
     return {
         list,
         inputValue,
     }
 }
 
-export default connect(mapStateToProps, {
-    onValueChange,
-    onAddItem,
-})(Root);
+const mapDispatchToProps = (dispatch) => ({
+    onValueChange: (value) => dispatch(onValueChange(value)),
+    onAddItem: () => dispatch(onAddItem()),
+    onDeleteItem: (index) => dispatch(onDeleteItem(index)),
+    getTodoList: () => dispatch(getTodoList()),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Root);

@@ -16,6 +16,13 @@ const composeEnhancers =
     window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?
         window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({}) : compose;
 
+// saga 配置
+// const sagaMiddleware = createSagaMiddleware();
+// const enhancer = composeEnhancers(
+//     applyMiddleware(sagaMiddleware),
+// );
+// sagaMiddleware.run(sagas);
+
 const enhancer = composeEnhancers(
     applyMiddleware(thunk),
 );
@@ -28,4 +35,5 @@ const configureStore = preloadedState => {
     return store;
 }
 
-export default configureStore;
+const store = configureStore();
+export default store;

@@ -7,14 +7,12 @@
  *
  */
 
-export const ValueChange = 'ValueChange';
-export const AddItem = 'AddItem';
+import Types from '../types'
 
 export function onValueChange(value) {
-
     return dispatch => {
         dispatch({
-            type: ValueChange,
+            type: Types.VALUE_CHANGE,
             value,
         })
     }
@@ -23,7 +21,24 @@ export function onValueChange(value) {
 export function onAddItem() {
     return dispatch => {
         dispatch({
-            type: AddItem,
-        })
+            type: Types.ADD_ITEM,
+        });
+    }
+}
+
+export function onDeleteItem(index) {
+    return dispatch => {
+        dispatch({
+            type: Types.DELETE_ITEM,
+            index,
+        });
+    }
+}
+
+export function getTodoList() {
+    return dispatch => {
+        dispatch({
+            type: Types.GET_TODOLIST,
+        });
     }
 }

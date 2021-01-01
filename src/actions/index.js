@@ -7,9 +7,10 @@
  *
  */
 
-import {onValueChange, onAddItem} from "./todo";
+import {onValueChange, onAddItem, onDeleteItem} from "./todo";
 
 export default {
     onValueChange,
     onAddItem,
+    onDeleteItem,
 }

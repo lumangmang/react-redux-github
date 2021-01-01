@@ -7,30 +7,31 @@
  *
  */
 
-import {ValueChange, AddItem} from "../../actions/todo";
+import Types from "../../actions/types";
 
 const defaultState = {
     inputValue: '',
-    list: [
-        '开早会',
-        '需求沟通会',
-    ]
+    list: []
 }
 
 const onAction = (state = defaultState, action) => {
     switch (action.type) {
-        case ValueChange:
+        case Types.VALUE_CHANGE:
             return {
                 ...state,
                 inputValue: action.value,
             };
-        case AddItem:
-            const {list, inputValue} = state;
-            return {
-                ...state,
-                list: list.concat(inputValue),
-                inputValue: '',
-            };
+        case Types.ADD_ITEM: {
+            let newState = JSON.parse(JSON.stringify(state));
+            newState.list.push(newState.inputValue);
+            newState.inputValue = '';
+            return newState;
+        }
+        case Types.DELETE_ITEM: {
+            let newState = JSON.parse(JSON.stringify(state));
+            newState.list.splice(action.index, 1);
+            return newState;
+        }
         default:
             return state;
     }
